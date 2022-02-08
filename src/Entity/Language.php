@@ -9,10 +9,22 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Entity\Traits\TimeStampableTrait;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=LanguageRepository::class)
  * @UniqueEntity("shortname", message="language.unique")
+ * @ApiResource(
+ *     collectionOperations={"GET", "POST"},
+ *     itemOperations={"GET", "PUT"},
+ *     normalizationContext={
+ *          "groups"={"languages_read"}
+ *     },
+ *     denormalizationContext={
+ *          "disable_type_enforcement"=true
+ *     }
+ * )
  */
 class Language
 {
@@ -20,6 +32,7 @@ class Language
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"languages_read"})
      */
     private $id;
 
@@ -27,6 +40,7 @@ class Language
      * @var string
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="language.fields.name.constraints.notblank")
+     * @Groups({"languages_read"})
      * @Assert\Type(
      *     type="string",
      *     message="typeError.string"
@@ -38,6 +52,7 @@ class Language
      * @var string
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="language.fields.shortname.constraints.notblank")
+     * @Groups({"languages_read", "users_read", "guardians_read"})
      * @Assert\Type(
      *     type="string",
      *     message="typeError.string"

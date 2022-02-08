@@ -6,6 +6,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Trait TimeStampableTrait
@@ -21,6 +22,7 @@ trait TimeStampableTrait
      *     type="\DateTime",
      *     message="typeError.dateTime"
      * )
+     * @Groups({"users_read"})
      */
     private $updatedAt;
 
@@ -32,6 +34,7 @@ trait TimeStampableTrait
      *     type="\DateTime",
      *     message="typeError.dateTime"
      * )
+     * @Groups({"users_read"})
      */
     private $createdAt;
 

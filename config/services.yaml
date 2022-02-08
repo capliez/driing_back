@@ -6,6 +6,7 @@
 parameters:
     locale: fr
     locales: fr|en
+    email_driing: contact@driingapp.fr
 services:
     # default configuration for services in *this* file
     _defaults:

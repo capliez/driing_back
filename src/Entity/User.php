@@ -13,6 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use DateTimeImmutable;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -21,14 +22,25 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *     fields={"email"},
  *     message="user.unique"
  * )
- * @ApiResource()
+ * @ApiResource(
+ *     collectionOperations={"GET", "POST"},
+ *     itemOperations={"GET", "PUT"},
+ *     normalizationContext={
+ *          "groups"={"users_read"}
+ *     },
+ *     denormalizationContext={
+ *          "disable_type_enforcement"=true
+ *     }
+ * )
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"users_read", "guardians_read"})
      */
     private $id;
 
@@ -41,6 +53,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *     type="string",
      *     message="typeError.string"
      * )
+     * @Groups({"users_read", "guardians_read"})
      */
     private $email;
 
@@ -109,6 +122,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\ManyToOne(targetEntity=Language::class, inversedBy="users")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotBlank(message="user.fields.language.constraints.notBlank")
+     * @Groups({"users_read", "guardians_read"})
      * @Assert\Type(
      *     type="object",
      *     message="typeError.object"
@@ -116,11 +130,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $language;
 
-
-    public function __construct()
-    {
-        $this->users = new ArrayCollection();
-    }
+    /**
+     * @ORM\OneToOne(targetEntity=Guardian::class, mappedBy="user", cascade={"persist", "remove"})
+     * @Groups({"users_read"})
+     * @Assert\Type(
+     *     type="object",
+     *     message="typeError.object"
+     * )
+     */
+    private $guardian;
 
     use TimeStampableTrait;
 
@@ -279,5 +297,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getGuardian(): ?Guardian
+    {
+        return $this->guardian;
+    }
+
+    public function setGuardian(Guardian $guardian): self
+    {
+        // set the owning side of the relation if necessary
+        if ($guardian->getUser() !== $this) {
+            $guardian->setUser($this);
+        }
+
+        $this->guardian = $guardian;
+
+        return $this;
+    }
+
 
 }

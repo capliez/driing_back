@@ -8,10 +8,22 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=RoleRepository::class)
  * @UniqueEntity("shortname", message="role.unique")
+ * @ApiResource(
+ *     collectionOperations={"GET", "POST"},
+ *     itemOperations={"GET", "PUT"},
+ *     normalizationContext={
+ *          "groups"={"roles_read"}
+ *     },
+ *     denormalizationContext={
+ *          "disable_type_enforcement"=true
+ *     }
+ * )
  */
 class Role
 {
@@ -19,6 +31,7 @@ class Role
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"roles_read"})
      */
     private $id;
 
@@ -30,6 +43,7 @@ class Role
      *     type="string",
      *     message="typeError.string"
      * )
+     * @Groups({"roles_read"})
      */
     private $label;
 
@@ -41,6 +55,7 @@ class Role
      *     type="string",
      *     message="typeError.string"
      * )
+     * @Groups({"roles_read"})
      */
     private $shortname;
 

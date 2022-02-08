@@ -26,7 +26,7 @@ general:
         notBlank: Veuillez indiquer le slug !
     user:
       constraints:
-        notBlank: Veuillez indiquer l'utilisateur !
+        notBlank: Veuillez indiquer le compte utilisateur !
 
 ###############################################################################################################
 ############################################ Entity Role ######################################################
@@ -84,3 +84,26 @@ user:
       constraints:
         notBlank: Veuillez indiquer la date de récupération !
 
+###############################################################################################################
+############################################ Entity Guardian ##################################################
+###############################################################################################################
+
+guardian:
+  unique: "{{ label }} existe déjà !"
+  fields:
+    firstName:
+      label: Prénom
+      constraints:
+        notBlank: Veuillez indiquer votre prénom !
+        regex: Le prénom ne peut pas contenir un chiffre !
+    lastName:
+      label: Nom
+      constraints:
+        notBlank: Veuillez indiquer votre nom de famille !
+        regex: Le nom de famille ne peut pas contenir un chiffre !
+    slug:
+      constraints:
+        notBlank: Veuillez indiquer le slug du gardien !
+    phone:
+      constraints:
+        notBlank: Veuillez indiquer le n° téléphone du gardien !
