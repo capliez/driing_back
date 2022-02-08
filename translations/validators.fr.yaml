@@ -1,0 +1,86 @@
+###############################################################################################################
+############################################ Type Error #######################################################
+###############################################################################################################
+
+typeError:
+  string: Waiting for 'string' format !
+  bool: Waiting for 'boolean' !
+  dateTime: Waiting for 'dateTime' !
+  object: Waiting for 'object' !
+  float: Waiting for 'float' !
+
+###############################################################################################################
+############################################ General ##########################################################
+###############################################################################################################
+
+general:
+  fields:
+    updatedAt:
+      constraints:
+        notBlank: Veuillez indiquer la date de mise à jour !
+    createdAt:
+      constraints:
+        notBlank: Veuillez indiquer la date de création !
+    slug:
+      constraints:
+        notBlank: Veuillez indiquer le slug !
+    user:
+      constraints:
+        notBlank: Veuillez indiquer l'utilisateur !
+
+###############################################################################################################
+############################################ Entity Role ######################################################
+###############################################################################################################
+
+role:
+  unique: Un role ayant déjà ce nom court
+  fields:
+    label:
+      constraints:
+        notBlank: Veuillez indiquer le libellé !
+    shortname:
+      constraints:
+        notBlank: Veuillez indiquer le nom court !
+
+###############################################################################################################
+############################################ Entity language ##################################################
+###############################################################################################################
+
+language:
+  unique: Cette langue existe déjà
+  fields:
+    name:
+      constraints:
+        notBlank: Veuillez indiquer le nom de la langue !
+    shortname:
+      constraints:
+        notBlank: Veuillez indiquer le code iso !
+
+###############################################################################################################
+############################################ Entity User ######################################################
+###############################################################################################################
+
+user:
+  unique: "{{ label }} existe déjà !"
+  fields:
+    email:
+      constraints:
+        valid: L'adresse e-mail doit être valide !
+        notBlank: Veuillez indiquer votre adresse email !
+    language:
+      constraints:
+        notBlank: Veuillez indiquer votre langue !
+    password:
+      constraints:
+        notBlank: Veuillez indiquer votre mot de passe !
+        regex: Le mot de passe doit comporter au moins 8 caractères et inclure au moins une lettre majuscule, un chiffre et des caractères spéciaux.
+    isNewsletter:
+      constraints:
+        notBlank: Veuillez indiquer l'offres spéciales !
+    isEnabled:
+      constraints:
+        notBlank: Veuillez indiquer si le compte est actif !
+    retrieveAt:
+      constraints:
+        notBlank: Veuillez indiquer la date de récupération !
+
