@@ -77,20 +77,6 @@ user:
     isNewsletter:
       constraints:
         notBlank: Veuillez indiquer l'offres spéciales !
-    isEnabled:
-      constraints:
-        notBlank: Veuillez indiquer si le compte est actif !
-    retrieveAt:
-      constraints:
-        notBlank: Veuillez indiquer la date de récupération !
-
-###############################################################################################################
-############################################ Entity Guardian ##################################################
-###############################################################################################################
-
-guardian:
-  unique: "{{ label }} existe déjà !"
-  fields:
     firstName:
       label: Prénom
       constraints:
@@ -101,9 +87,12 @@ guardian:
       constraints:
         notBlank: Veuillez indiquer votre nom de famille !
         regex: Le nom de famille ne peut pas contenir un chiffre !
-    slug:
-      constraints:
-        notBlank: Veuillez indiquer le slug du gardien !
     phone:
       constraints:
-        notBlank: Veuillez indiquer le n° téléphone du gardien !
+        notBlank: Veuillez indiquer le n° téléphone !
+    isEnabled:
+      constraints:
+        notBlank: Veuillez indiquer si le compte est actif !
+    retrieveAt:
+      constraints:
+        notBlank: Veuillez indiquer la date de récupération !

@@ -6,6 +6,7 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Scheb\TwoFactorBundle\Model\Email\TwoFactorInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Entity\Traits\TimeStampableTrait;
@@ -14,12 +15,13 @@ use DateTimeImmutable;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="`user`")
  * @UniqueEntity(
- *     fields={"email"},
+ *     fields={"email", "phone"},
  *     message="user.unique"
  * )
  * @ApiResource(
@@ -33,27 +35,53 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     }
  * )
  */
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFactorInterface
 {
 
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"users_read", "guardians_read"})
+     * @Groups({"users_read"})
      */
     private $id;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="user.fields.firstName.constraints.notBlank")
+     * @Assert\Regex(pattern="/\d/", match=false, message="user.fields.firstName.constraints.regex")
+     * @Groups({"users_read"})
+     * @Assert\Type(
+     *     type="string",
+     *     message="typeError.string"
+     * )
+     */
+    private $firstName;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="user.fields.lastName.constraints.notBlank")
+     * @Assert\Regex(pattern="/\d/", match=false, message="user.fields.lastName.constraints.regex")
+     * @Groups({"users_read"})
+     * @Assert\Type(
+     *     type="string",
+     *     message="typeError.string"
+     * )
+     */
+    private $lastName;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\NotBlank(message="user.fields.email.constraints.notblank")
      * @Assert\Email(message="user.fields.email.constraints.valid")
+     * @Groups({"users_read"})
      * @Assert\Type(
      *     type="string",
      *     message="typeError.string"
      * )
-     * @Groups({"users_read", "guardians_read"})
      */
     private $email;
 
@@ -71,13 +99,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=6, nullable=true)
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="user.fields.phoneCompany.constraints.notBlank")
+     * @Groups({"users_read"})
      * @Assert\Type(
      *     type="string",
      *     message="typeError.string"
      * )
      */
-    private $personalCode;
+    private $phone;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", nullable=true)
+     * @Assert\Type(
+     *     type="string",
+     *     message="typeError.string"
+     * )
+     */
+    private $authCode;
 
     /**
      * @var boolean
@@ -88,6 +128,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * )
      */
     private $isEnabled;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Groups({"users_read"})
+     * @Assert\Type(
+     *     type="bool",
+     *     message="typeError.bool"
+     * )
+     */
+    private $isOnboarding;
+
 
     /**
      * @var DateTimeImmutable
@@ -103,7 +154,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var DateTimeImmutable
      * @ORM\Column(type="datetime_immutable", nullable=true)
      * @Assert\Type(
-     *     type="\DateTime",
+     *     type="\DateTimeInterface",
      *     message="typeError.dateTime"
      * )
      */
@@ -122,7 +173,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\ManyToOne(targetEntity=Language::class, inversedBy="users")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotBlank(message="user.fields.language.constraints.notBlank")
-     * @Groups({"users_read", "guardians_read"})
+     * @Groups({"users_read"})
      * @Assert\Type(
      *     type="object",
      *     message="typeError.object"
@@ -131,20 +182,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $language;
 
     /**
-     * @ORM\OneToOne(targetEntity=Guardian::class, mappedBy="user", cascade={"persist", "remove"})
-     * @Groups({"users_read"})
+     * @var string
+     * @Gedmo\Slug(fields={"firstName", "lastName"})
+     * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\Type(
-     *     type="object",
-     *     message="typeError.object"
+     *     type="string",
+     *     message="typeError.string"
      * )
      */
-    private $guardian;
+    private $slug;
 
     use TimeStampableTrait;
+
+    /**
+     * @Groups({"users_read"})
+     * @return string
+     */
+    public function getFullName(): string
+    {
+        return $this->firstName.' '.$this->lastName;
+    }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName(string $firstName): self
+    {
+        $this->firstName = $firstName;
+
+        return $this;
+    }
+
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName(string $lastName): self
+    {
+        $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(string $phone): self
+    {
+        $this->phone = $phone;
+
+        return $this;
     }
 
     public function getEmail(): ?string
@@ -155,6 +252,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): self
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    public function getIsOnboarding(): ?bool
+    {
+        return $this->isOnboarding;
+    }
+
+    public function setIsOnboarding(?bool $isOnboarding): self
+    {
+        $this->isOnboarding = $isOnboarding;
 
         return $this;
     }
@@ -298,21 +407,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getGuardian(): ?Guardian
+    public function isEmailAuthEnabled(): bool
     {
-        return $this->guardian;
+        return true; // This can be a persisted field to switch email code authentication on/off
     }
 
-    public function setGuardian(Guardian $guardian): self
+    public function getEmailAuthRecipient(): string
     {
-        // set the owning side of the relation if necessary
-        if ($guardian->getUser() !== $this) {
-            $guardian->setUser($this);
+        return $this->email;
+    }
+
+    public function getEmailAuthCode(): string
+    {
+        if (null === $this->authCode) {
+            throw new \LogicException('The email authentication code was not set');
         }
 
-        $this->guardian = $guardian;
+        return $this->authCode;
+    }
 
-        return $this;
+    public function setEmailAuthCode(string $authCode): void
+    {
+        $this->authCode = $authCode;
     }
 
 

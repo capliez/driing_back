@@ -114,6 +114,9 @@ class AppFixtures extends Fixture
 
             $user->setIsEnabled($this->faker->boolean())
                 ->setEmail($this->faker->email)
+                ->setLastName($this->faker->lastName)
+                ->setFirstName($this->faker->firstName)
+                ->setPhone($this->faker->phoneNumber)
                 ->setUserRole($this->roleRepository->findOneBy(['shortname' => "ROLE_GUARDIAN"]))
                 ->setLanguage($this->languageRepository->findOneBy(['shortname' => $this->faker->randomElement(['fr', 'en'])]))
                 ->setPassword($password);
