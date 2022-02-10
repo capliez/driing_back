@@ -51,6 +51,10 @@ language:
 user:
   nameSingul: Utilisateur
   namePlural: Utilisateurs
+  message:
+    create: L'utilisateur %name% a bien été ajouté
+    remove: L'utilisateur %name% a bien été supprimé
+    update: L'utilisateur %name% a bien été mis à jour
   fields:
     email:
       label: Email

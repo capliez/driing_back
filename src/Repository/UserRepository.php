@@ -22,6 +22,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         parent::__construct($registry, User::class);
     }
 
+
     /**
      * Used to upgrade (rehash) the user's password automatically over time.
      */
@@ -34,6 +35,38 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $user->setPassword($newHashedPassword);
         $this->_em->persist($user);
         $this->_em->flush();
+    }
+
+    public function findByEmailOrUsername($emailOrPhone)
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.email = :emailOrPhone OR u.phone = :emailOrPhone')
+            ->setParameter('emailOrPhone', $emailOrPhone)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
+
+    public function verifEmailUser($email, $id)
+    {
+        $qb = $this->createQueryBuilder('v')
+            ->andWhere('UPPER(v.email) = :email');
+
+
+        if ($id) {
+            $qb->andWhere('v.id != :id')
+                ->setParameters([
+                    'email' => strtoupper($email),
+                    'id' => $id,
+                ]);
+        } else {
+            $qb->setParameters([
+                'email' => strtoupper($email),
+            ]);
+        }
+
+        return $qb->getQuery()
+            ->getResult();
     }
 
     // /**

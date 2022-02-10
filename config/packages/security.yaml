@@ -17,7 +17,7 @@ security:
         app_user_provider:
             entity:
                 class: App\Entity\User
-                property: email
+                property: phone
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -65,17 +65,24 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+        #####################
+        ######## API ########
+        #####################
         #Language [a verify after]
         - { path: ^/api/languages, roles: PUBLIC_ACCESS, methods: GET }
-        #Role
-        - { path: ^/api/roles, roles: ROLE_ADMIN, methods: GET }
         #Guardian
-        - { path: ^/api/guardians, roles: ROLE_USER, methods: [GET, PUT] }
+        - { path: ^/api/guardians, roles: ROLE_GUARDIAN, methods: [GET, PUT] }
+        #Building
+        - { path: ^/api/buildings, roles: ROLE_GUARDIAN, methods: [ GET ] }
+        #Resident
+        - { path: ^/api/residents, roles: ROLE_GUARDIAN, methods: [ GET, POST, PUT ] }
         #Authentification
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
-        - { path: ^/api,       roles: ROLE_USER, methods: GET }
+        - { path: ^/api,       roles: ROLE_GUARDIAN, methods: GET }
 
-        #BackEnd
+        #########################
+        ######## BackEnd ########
+        #########################
         - { path: ^/logout, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/4dm1n, roles: ROLE_ADMIN }
         - { path: ^/2fa, roles: IS_AUTHENTICATED_2FA_IN_PROGRESS }

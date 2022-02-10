@@ -5,6 +5,8 @@ namespace App\Doctrine;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
+use App\Entity\Building;
+use App\Entity\Resident;
 use App\Entity\User;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -30,11 +32,15 @@ class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryIt
     {
         $user = $this->security->getUser();
 
-        if (($resourceClass === User::class) && $user instanceof User && !$this->auth->isGranted('ROLE_ADMIN')) {
+        if (($resourceClass === User::class || $resourceClass === Building::class || $resourceClass === Resident::class) && $user instanceof User && !$this->auth->isGranted('ROLE_ADMIN')) {
             $rootAlias = $queryBuilder->getRootAliases()[0];
 
             if ($resourceClass === User::class) {
                 $queryBuilder->andWhere("$rootAlias.id = :user");
+            } elseif ($resourceClass === Building::class) {
+                $queryBuilder->andWhere("$rootAlias.user = :user");
+            } elseif ($resourceClass === Resident::class) {
+                $queryBuilder->andWhere("$rootAlias.user = :user");
             }
             $queryBuilder->setParameter("user", $user);
         }

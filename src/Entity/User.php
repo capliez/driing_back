@@ -16,16 +16,18 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Gedmo\Mapping\Annotation as Gedmo;
+use App\Validator as AcmeAssert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="`user`")
  * @UniqueEntity(
- *     fields={"email", "phone"},
+ *     fields={"phone"},
  *     message="user.unique"
  * )
+ * @AcmeAssert\ContainsUserEmail(message="user.fields.email.constraints.unique")
  * @ApiResource(
- *     collectionOperations={"GET", "POST"},
+ *     collectionOperations={"GET"},
  *     itemOperations={"GET", "PUT"},
  *     normalizationContext={
  *          "groups"={"users_read"}
@@ -74,8 +76,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=180, unique=true)
-     * @Assert\NotBlank(message="user.fields.email.constraints.notblank")
+     * @ORM\Column(type="string", length=180, unique=true, nullable=true)
      * @Assert\Email(message="user.fields.email.constraints.valid")
      * @Groups({"users_read"})
      * @Assert\Type(
@@ -99,7 +100,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\NotBlank(message="user.fields.phoneCompany.constraints.notBlank")
      * @Groups({"users_read"})
      * @Assert\Type(
@@ -192,6 +193,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
      */
     private $slug;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Building::class, mappedBy="guardian")
+     * @Assert\Type(
+     *     type="object",
+     *     message="typeError.object"
+     * )
+     */
+    private $buildings;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Logs::class, mappedBy="user")
+     */
+    private $logs;
+
+    public function __construct()
+    {
+        $this->buildings = new ArrayCollection();
+        $this->logs = new ArrayCollection();
+    }
+
     use TimeStampableTrait;
 
     /**
@@ -249,7 +270,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(?string $email): self
     {
         $this->email = $email;
 
@@ -429,6 +450,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function setEmailAuthCode(string $authCode): void
     {
         $this->authCode = $authCode;
+    }
+
+    /**
+     * @return Collection|Building[]
+     */
+    public function getBuildings(): Collection
+    {
+        return $this->buildings;
+    }
+
+    public function addBuilding(Building $building): self
+    {
+        if (!$this->buildings->contains($building)) {
+            $this->buildings[] = $building;
+            $building->setGuardian($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBuilding(Building $building): self
+    {
+        if ($this->buildings->removeElement($building)) {
+            // set the owning side to null (unless already changed)
+            if ($building->getGuardian() === $this) {
+                $building->setGuardian(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Logs[]
+     */
+    public function getLogs(): Collection
+    {
+        return $this->logs;
+    }
+
+    public function addLog(Logs $log): self
+    {
+        if (!$this->logs->contains($log)) {
+            $this->logs[] = $log;
+            $log->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLog(Logs $log): self
+    {
+        if ($this->logs->removeElement($log)) {
+            // set the owning side to null (unless already changed)
+            if ($log->getUser() === $this) {
+                $log->setUser(null);
+            }
+        }
+
+        return $this;
     }
 
 

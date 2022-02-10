@@ -65,6 +65,7 @@ user:
   fields:
     email:
       constraints:
+        unique: "L'adresse e-mail {{ string }} existe déjà !"
         valid: L'adresse e-mail doit être valide !
         notBlank: Veuillez indiquer votre adresse email !
     language:
@@ -78,12 +79,10 @@ user:
       constraints:
         notBlank: Veuillez indiquer l'offres spéciales !
     firstName:
-      label: Prénom
       constraints:
         notBlank: Veuillez indiquer votre prénom !
         regex: Le prénom ne peut pas contenir un chiffre !
     lastName:
-      label: Nom
       constraints:
         notBlank: Veuillez indiquer votre nom de famille !
         regex: Le nom de famille ne peut pas contenir un chiffre !
@@ -96,3 +95,50 @@ user:
     retrieveAt:
       constraints:
         notBlank: Veuillez indiquer la date de récupération !
+
+###############################################################################################################
+############################################ Entity Resident ##################################################
+###############################################################################################################
+
+resident:
+  unique: "{{ label }} existe déjà !"
+  fields:
+    firstName:
+      constraints:
+        regex: Le prénom ne peut pas contenir un chiffre !
+    lastName:
+      constraints:
+        notBlank: Veuillez indiquer votre nom de famille !
+        regex: Le nom de famille ne peut pas contenir un chiffre !
+    phone:
+      constraints:
+        notBlank: Veuillez indiquer le n° téléphone !
+    building:
+      constraints:
+        notBlank: Veuillez indiquer l'immeuble du gardien !
+
+###############################################################################################################
+############################################ Entity Building ##################################################
+###############################################################################################################
+
+building:
+  unique: "{{ label }} existe déjà !"
+  fields:
+    name:
+      constraints:
+        notBlank: Veuillez indiquer le nom de l'immeuble !
+    address:
+      constraints:
+        notBlank: Veuillez indiquer l'adresse de l'immeuble !
+    postcode:
+      constraints:
+        notBlank: Veuillez indiquer le code postal de l'immeuble !
+    city:
+      constraints:
+        notBlank: Veuillez indiquer la ville de l'immeuble !
+    country:
+      constraints:
+        notBlank: Veuillez indiquer le pays de l'immeuble !
+    guardian:
+      constraints:
+        notBlank: Veuillez indiquer le gardien de l'immeuble !

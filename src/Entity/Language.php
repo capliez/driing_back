@@ -69,12 +69,12 @@ class Language
      */
     private $users;
 
+    use TimeStampableTrait;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
     }
-
-    use TimeStampableTrait;
 
     public function getId(): ?int
     {
