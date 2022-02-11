@@ -19,6 +19,15 @@ class ResidentRepository extends ServiceEntityRepository
         parent::__construct($registry, Resident::class);
     }
 
+    public function findAllByBuilding($id)
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->andWhere('r.building = :id')
+            ->setParameter('id', $id);
+
+        return $qb->getQuery()->getResult();
+    }
+
     // /**
     //  * @return Resident[] Returns an array of Resident objects
     //  */

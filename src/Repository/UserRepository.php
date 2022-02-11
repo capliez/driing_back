@@ -47,6 +47,15 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ;
     }
 
+    public function findAllGardian()
+    {
+        return $this->createQueryBuilder('u')
+            ->innerJoin('u.userRole', 'r')
+            ->andWhere('r.shortname = :role')
+            ->setParameter('role', "ROLE_GUARDIAN")
+            ;
+    }
+
     public function verifEmailUser($email, $id)
     {
         $qb = $this->createQueryBuilder('v')

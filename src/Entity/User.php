@@ -2,21 +2,21 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\Traits\TimeStampableTrait;
 use App\Repository\UserRepository;
+use App\Validator as AcmeAssert;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Scheb\TwoFactorBundle\Model\Email\TwoFactorInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use App\Entity\Traits\TimeStampableTrait;
-use Symfony\Component\Validator\Constraints as Assert;
-use DateTimeImmutable;
-use ApiPlatform\Core\Annotation\ApiResource;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Gedmo\Mapping\Annotation as Gedmo;
-use App\Validator as AcmeAssert;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -207,22 +207,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
      */
     private $logs;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Package::class, mappedBy="guardian")
+     */
+    private $packages;
+
     public function __construct()
     {
         $this->buildings = new ArrayCollection();
         $this->logs = new ArrayCollection();
+        $this->packages = new ArrayCollection();
     }
 
     use TimeStampableTrait;
-
-    /**
-     * @Groups({"users_read"})
-     * @return string
-     */
-    public function getFullName(): string
-    {
-        return $this->firstName.' '.$this->lastName;
-    }
 
     public function getId(): ?int
     {
@@ -296,7 +293,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -304,7 +301,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
      */
     public function getUsername(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -319,7 +316,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
         return array_unique($roles);
     }
-
 
     /**
      * @see PasswordAuthenticatedUserInterface
@@ -510,6 +506,50 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection|Package[]
+     */
+    public function getPackages(): Collection
+    {
+        return $this->packages;
+    }
+
+    public function addPackage(Package $package): self
+    {
+        if (!$this->packages->contains($package)) {
+            $this->packages[] = $package;
+            $package->setGuardian($this);
+        }
+
+        return $this;
+    }
+
+    public function removePackage(Package $package): self
+    {
+        if ($this->packages->removeElement($package)) {
+            // set the owning side to null (unless already changed)
+            if ($package->getGuardian() === $this) {
+                $package->setGuardian(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getFullName();
+    }
+
+    /**
+     * @Groups({"users_read"})
+     * @return string
+     */
+    public function getFullName(): string
+    {
+        return $this->firstName . ' ' . $this->lastName;
     }
 
 

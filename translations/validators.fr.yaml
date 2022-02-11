@@ -6,6 +6,7 @@ typeError:
   string: Waiting for 'string' format !
   bool: Waiting for 'boolean' !
   dateTime: Waiting for 'dateTime' !
+  integer: Waiting for 'integer' !
   object: Waiting for 'object' !
   float: Waiting for 'float' !
 
@@ -142,3 +143,33 @@ building:
     guardian:
       constraints:
         notBlank: Veuillez indiquer le gardien de l'immeuble !
+
+###############################################################################################################
+############################################ Entity Package ###################################################
+###############################################################################################################
+
+package:
+  fields:
+    nbPackage:
+      constraints:
+        notBlank: Veuillez indiquer le nombre de colis !
+    building:
+      constraints:
+        notBlank: Veuillez indiquer l'immeuble !
+    resident:
+      constraints:
+        notBlank: Veuillez indiquer le résident concerné !
+    guardian:
+      constraints:
+        notBlank: Veuillez indiquer le gardien concerné !
+
+###############################################################################################################
+############################################ Entity PackageDetail #############################################
+###############################################################################################################
+
+packageDetail:
+  fields:
+    package:
+      constraints:
+        notBlank: Veuillez indiquer le colis !
+

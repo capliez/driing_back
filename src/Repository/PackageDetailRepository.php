@@ -2,34 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\Package;
+use App\Entity\PackageDetail;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Package|null find($id, $lockMode = null, $lockVersion = null)
- * @method Package|null findOneBy(array $criteria, array $orderBy = null)
- * @method Package[]    findAll()
- * @method Package[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method PackageDetail|null find($id, $lockMode = null, $lockVersion = null)
+ * @method PackageDetail|null findOneBy(array $criteria, array $orderBy = null)
+ * @method PackageDetail[]    findAll()
+ * @method PackageDetail[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class PackageRepository extends ServiceEntityRepository
+class PackageDetailRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Package::class);
-    }
-
-    public function findAllByBuilding($id)
-    {
-        $qb = $this->createQueryBuilder('r')
-            ->andWhere('r.building = :id')
-            ->setParameter('id', $id);
-
-        return $qb->getQuery()->getResult();
+        parent::__construct($registry, PackageDetail::class);
     }
 
     // /**
-    //  * @return Package[] Returns an array of Package objects
+    //  * @return PackageDetail[] Returns an array of PackageDetail objects
     //  */
     /*
     public function findByExampleField($value)
@@ -46,7 +37,7 @@ class PackageRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Package
+    public function findOneBySomeField($value): ?PackageDetail
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.exampleField = :val')

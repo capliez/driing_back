@@ -14,10 +14,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class LogsRepository extends ServiceEntityRepository
 {
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Logs::class);
     }
+
 
     // /**
     //  * @return Logs[] Returns an array of Logs objects

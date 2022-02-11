@@ -74,3 +74,49 @@ user:
       label: Récupérer à
     role:
       label: Rôle
+
+###############################################################################################################
+############################################ Entity Building ##################################################
+###############################################################################################################
+
+building:
+  nameSingul: Immeuble
+  namePlural: Immeubles
+  message:
+    create: L'immeuble %name% a bien été ajouté
+    remove: L'immeuble %name% a bien été supprimé
+    update: L'immeuble %name% a bien été mis à jour
+  fields:
+    name:
+      label: Nom de l'immeuble
+    address:
+      label: Adresse
+    city:
+      label: Ville
+    postcode:
+      label: Code postal
+    country:
+      label: Pays
+    guardian:
+      label: Gardien responsable
+
+###############################################################################################################
+############################################ Entity Resident ##################################################
+###############################################################################################################
+
+resident:
+  nameSingul: Résident
+  namePlural: Résidents
+  message:
+    create: Le résident %name% a bien été ajouté
+    remove: Le résident %name% a bien été supprimé
+    update: Le résident %name% a bien été mis à jour
+  fields:
+    lastName:
+      label: Nom
+    email:
+      label: Email
+    phone:
+      label: N° téléphone
+    building:
+      label: Immeuble

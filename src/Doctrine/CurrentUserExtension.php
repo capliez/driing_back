@@ -32,15 +32,13 @@ class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryIt
     {
         $user = $this->security->getUser();
 
-        if (($resourceClass === User::class || $resourceClass === Building::class || $resourceClass === Resident::class) && $user instanceof User && !$this->auth->isGranted('ROLE_ADMIN')) {
+        if (($resourceClass === User::class || $resourceClass === Building::class) && $user instanceof User && !$this->auth->isGranted('ROLE_ADMIN')) {
             $rootAlias = $queryBuilder->getRootAliases()[0];
 
             if ($resourceClass === User::class) {
                 $queryBuilder->andWhere("$rootAlias.id = :user");
             } elseif ($resourceClass === Building::class) {
-                $queryBuilder->andWhere("$rootAlias.user = :user");
-            } elseif ($resourceClass === Resident::class) {
-                $queryBuilder->andWhere("$rootAlias.user = :user");
+                $queryBuilder->andWhere("$rootAlias.guardian = :user");
             }
             $queryBuilder->setParameter("user", $user);
         }

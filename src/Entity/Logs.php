@@ -2,109 +2,136 @@
 
 namespace App\Entity;
 
-use App\Repository\LogsRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\LogsRepository;
 
 /**
  * @ORM\Entity(repositoryClass=LogsRepository::class)
+ * @ORM\Table(name="logs")
+ * @ORM\HasLifecycleCallbacks
  */
 class Logs
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(name="message", type="text")
      */
-    private $nameEntity;
+    private $message;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(name="context", type="array")
      */
-    private $action;
+    private $context;
 
     /**
-     * @ORM\Column(type="json", nullable=true)
+     * @ORM\Column(name="level", type="smallint")
      */
-    private $prevData = [];
+    private $level;
 
     /**
-     * @ORM\Column(type="json")
+     * @ORM\Column(name="level_name", type="string", length=50)
      */
-    private $nextState = [];
+    private $levelName;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="logs")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\Column(name="extra", type="array")
      */
-    private $user;
+    private $extra;
+
+    /**
+     * @ORM\Column(name="created_at", type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function onPrePersist()
+    {
+        $this->createdAt = new \DateTime();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getNameEntity(): ?string
+    public function getMessage(): ?string
     {
-        return $this->nameEntity;
+        return $this->message;
     }
 
-    public function setNameEntity(string $nameEntity): self
+    public function setMessage(string $message): self
     {
-        $this->nameEntity = $nameEntity;
+        $this->message = $message;
 
         return $this;
     }
 
-    public function getAction(): ?string
+    public function getContext(): ?array
     {
-        return $this->action;
+        return $this->context;
     }
 
-    public function setAction(string $action): self
+    public function setContext(array $context): self
     {
-        $this->action = $action;
+        $this->context = $context;
 
         return $this;
     }
 
-    public function getPrevData(): ?array
+    public function getLevel(): ?int
     {
-        return $this->prevData;
+        return $this->level;
     }
 
-    public function setPrevData(?array $prevData): self
+    public function setLevel(int $level): self
     {
-        $this->prevData = $prevData;
+        $this->level = $level;
 
         return $this;
     }
 
-    public function getNextState(): ?array
+    public function getLevelName(): ?string
     {
-        return $this->nextState;
+        return $this->levelName;
     }
 
-    public function setNextState(array $nextState): self
+    public function setLevelName(string $levelName): self
     {
-        $this->nextState = $nextState;
+        $this->levelName = $levelName;
 
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getExtra(): ?array
     {
-        return $this->user;
+        return $this->extra;
     }
 
-    public function setUser(?User $user): self
+    public function setExtra(array $extra): self
     {
-        $this->user = $user;
+        $this->extra = $extra;
 
         return $this;
     }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
 }

@@ -2,13 +2,15 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Traits\TimeStampableTrait;
 use App\Repository\ResidentRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Constraints as Assert;
-use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ResidentRepository::class)
@@ -17,8 +19,19 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     message="resident.unique"
  * )
  * @ApiResource(
- *     collectionOperations={"GET", "POST"},
- *     itemOperations={"GET", "PUT"},
+ *     collectionOperations={"POST", "GET"},
+ *     itemOperations={"GET", "PUT",
+ *     "getAll" = {
+ *          "method": "GET",
+ *          "path"="/residents/building/{id}",
+ *          "controller"="App\Controller\Api\ResidentController",
+ *          "read"=false,
+ *          "openapi_context"=
+ *          {
+ *              "summary"="Récupére les résidents",
+ *              "description"="Récupére les résidents en fonction de l'immeuble"
+ *          }
+ *     }},
  *     normalizationContext={
  *          "groups"={"residents_read"}
  *     },
@@ -53,7 +66,7 @@ class Resident
     /**
      * @var string
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(message="resident.fields.phoneCompany.constraints.notBlank")
+     * @Assert\NotBlank(message="resident.fields.phone.constraints.notBlank")
      * @Groups({"residents_read"})
      * @Assert\Type(
      *     type="string",
@@ -83,6 +96,26 @@ class Resident
      * )
      */
     private $building;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Package::class, mappedBy="resident")
+     */
+    private $packages;
+
+    /**
+     * @var boolean
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Assert\Type(
+     *     type="bool",
+     *     message="typeError.bool"
+     * )
+     */
+    private $isEnabled;
+
+    public function __construct()
+    {
+        $this->packages = new ArrayCollection();
+    }
 
     use TimeStampableTrait;
 
@@ -135,6 +168,48 @@ class Resident
     public function setBuilding(?Building $building): self
     {
         $this->building = $building;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Package[]
+     */
+    public function getPackages(): Collection
+    {
+        return $this->packages;
+    }
+
+    public function addPackage(Package $package): self
+    {
+        if (!$this->packages->contains($package)) {
+            $this->packages[] = $package;
+            $package->setResident($this);
+        }
+
+        return $this;
+    }
+
+    public function removePackage(Package $package): self
+    {
+        if ($this->packages->removeElement($package)) {
+            // set the owning side to null (unless already changed)
+            if ($package->getResident() === $this) {
+                $package->setResident(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getIsEnabled(): ?bool
+    {
+        return $this->isEnabled;
+    }
+
+    public function setIsEnabled(?bool $isEnabled): self
+    {
+        $this->isEnabled = $isEnabled;
 
         return $this;
     }

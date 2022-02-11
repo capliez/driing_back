@@ -131,11 +131,27 @@ class Building
      */
     private $slug;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Package::class, mappedBy="building")
+     */
+    private $packages;
+
+    /**
+     * @var boolean
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Assert\Type(
+     *     type="bool",
+     *     message="typeError.bool"
+     * )
+     */
+    private $isEnabled;
+
     use TimeStampableTrait;
 
     public function __construct()
     {
         $this->residents = new ArrayCollection();
+        $this->packages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -243,5 +259,52 @@ class Building
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection|Package[]
+     */
+    public function getPackages(): Collection
+    {
+        return $this->packages;
+    }
+
+    public function addPackage(Package $package): self
+    {
+        if (!$this->packages->contains($package)) {
+            $this->packages[] = $package;
+            $package->setBuilding($this);
+        }
+
+        return $this;
+    }
+
+    public function removePackage(Package $package): self
+    {
+        if ($this->packages->removeElement($package)) {
+            // set the owning side to null (unless already changed)
+            if ($package->getBuilding() === $this) {
+                $package->setBuilding(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getIsEnabled(): ?bool
+    {
+        return $this->isEnabled;
+    }
+
+    public function setIsEnabled(bool $isEnabled): self
+    {
+        $this->isEnabled = $isEnabled;
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 }
