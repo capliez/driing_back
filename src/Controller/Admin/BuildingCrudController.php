@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CountryField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
@@ -65,6 +66,7 @@ class BuildingCrudController extends AbstractCrudController
         yield TextField::new('city')->setLabel('building.fields.city.label')->setColumns('col-md-6')->hideOnIndex();
 
         yield TextField::new('postcode')->setLabel('building.fields.postcode.label')->setColumns('col-md-6')->onlyWhenCreating();
+        yield CountryField::new('country')->setLabel('building.fields.country.label')->setColumns('col-md-6')->onlyWhenCreating();
 
         //Step 2
         yield AssociationField::new('guardian')

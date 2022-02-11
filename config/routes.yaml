@@ -13,3 +13,7 @@ api_login_check:
 
 2fa_login_check:
   path: /2fa_check
+
+simple_things_entity_audit:
+  resource: "@SimpleThingsEntityAuditBundle/Resources/config/routing/audit.xml"
+  prefix: /4dm1n/logs

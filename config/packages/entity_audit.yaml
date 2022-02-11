@@ -1,0 +1,7 @@
+simple_things_entity_audit:
+  audited_entities:
+    - App\Entity\Building
+    - App\Entity\Resident
+    - App\Entity\User
+    - App\Entity\Package
+    - App\Entity\PackageDetail

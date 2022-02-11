@@ -226,6 +226,9 @@
     "scheb/2fa-trusted-device": {
         "version": "v5.13.1"
     },
+    "sonata-project/entity-audit-bundle": {
+        "version": "1.7.0"
+    },
     "stof/doctrine-extensions-bundle": {
         "version": "1.7",
         "recipe": {

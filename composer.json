@@ -21,6 +21,7 @@
         "scheb/2fa-bundle": "^5.13",
         "scheb/2fa-email": "^5.13",
         "scheb/2fa-trusted-device": "^5.13",
+        "sonata-project/entity-audit-bundle": "^1.7",
         "stof/doctrine-extensions-bundle": "^1.7",
         "symfony/asset": "5.4.*",
         "symfony/console": "5.4.*",

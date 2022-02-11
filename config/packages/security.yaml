@@ -92,6 +92,7 @@ security:
         ######## BackEnd ########
         #########################
         - { path: ^/logout, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: /4dm1n/logs, roles: ROLE_SUPER_ADMIN }
         - { path: ^/4dm1n, roles: ROLE_ADMIN }
         - { path: ^/2fa, roles: IS_AUTHENTICATED_2FA_IN_PROGRESS }
 
