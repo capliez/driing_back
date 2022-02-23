@@ -23,7 +23,9 @@ class ResidentRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('r')
             ->andWhere('r.building = :id')
-            ->setParameter('id', $id);
+            ->andWhere('r.isEnabled = :enabled')
+            ->setParameter('id', $id)
+            ->setParameter('enabled', true);
 
         return $qb->getQuery()->getResult();
     }

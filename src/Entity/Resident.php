@@ -112,12 +112,22 @@ class Resident
      */
     private $isEnabled;
 
+    use TimeStampableTrait;
+
+
     public function __construct()
     {
         $this->packages = new ArrayCollection();
     }
 
-    use TimeStampableTrait;
+    /**
+     * @Groups({"residents_read"})
+     * @return int
+     */
+    public function getCountPackages(): int
+    {
+        return count($this->packages);
+    }
 
     public function getId(): ?int
     {

@@ -31,10 +31,15 @@ class PackageRepository extends ServiceEntityRepository
     public function findAllhandOver($idBuilding)
     {
         $qb = $this->createQueryBuilder('r')
+            ->innerJoin('r.resident', 're')
             ->andWhere('r.building = :id')
             ->andWhere('r.isHandedOver = :over OR r.isHandedOver is null')
-            ->setParameter('id', $idBuilding)
-            ->setParameter('over', false);
+            ->andWhere('re.isEnabled = :enabled')
+            ->setParameters([
+                'id' => $idBuilding,
+                'over' => false,
+                'enabled' => true,
+            ]);
 
         return $qb->getQuery()->getResult();
     }
