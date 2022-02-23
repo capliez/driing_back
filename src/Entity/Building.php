@@ -116,7 +116,6 @@ class Building
      *     type="object",
      *     message="typeError.object"
      * )
-     * @Groups({"buildings_read"})
      */
     private $residents;
 

@@ -31,6 +31,7 @@ class JWTCreatedListener {
         $payload       = $event->getData();
         $payload['ip'] = $request->getClientIp();
         $payload['language'] = $event->getUser()->getLanguage()->getShortname();
+        $payload['isOnboarding'] = $event->getUser()->getIsOnboarding();
 
         $event->setData($payload);
 

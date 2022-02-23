@@ -77,11 +77,10 @@ security:
         #Resident
         - { path: ^/api/residents/building, roles: ROLE_GUARDIAN, methods: GET }
         - { path: ^/api/residents, roles: ROLE_GUARDIAN, methods: [ POST, PUT ] }
-        - { path: ^/api/residents, roles: ROLE_ADMIN, methods: GET }
         #Package
         - { path: ^/api/packages/building, roles: ROLE_GUARDIAN, methods: GET }
+        - { path: ^/api/packages/handedover, roles: ROLE_GUARDIAN, methods: GET }
         - { path: ^/api/packages, roles: ROLE_GUARDIAN, methods: [ POST, PUT ] }
-        - { path: ^/api/packages, roles: ROLE_ADMIN, methods: GET }
         #PackageDetail
         - { path: ^/api/packagedetails, roles: ROLE_GUARDIAN, methods: [ GET, POST, PUT ] }
         #Authentification

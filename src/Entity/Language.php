@@ -32,7 +32,7 @@ class Language
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"languages_read"})
+     * @Groups({"languages_read", "users_read"})
      */
     private $id;
 
@@ -40,7 +40,7 @@ class Language
      * @var string
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="language.fields.name.constraints.notblank")
-     * @Groups({"languages_read"})
+     * @Groups({"languages_read", "users_read"})
      * @Assert\Type(
      *     type="string",
      *     message="typeError.string"

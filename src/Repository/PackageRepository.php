@@ -28,6 +28,17 @@ class PackageRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    public function findAllhandOver($idBuilding)
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->andWhere('r.building = :id')
+            ->andWhere('r.isHandedOver = :over OR r.isHandedOver is null')
+            ->setParameter('id', $idBuilding)
+            ->setParameter('over', false);
+
+        return $qb->getQuery()->getResult();
+    }
+
     // /**
     //  * @return Package[] Returns an array of Package objects
     //  */

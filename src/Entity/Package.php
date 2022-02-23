@@ -26,7 +26,19 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *              "summary"="Récupére les colis",
  *              "description"="Récupére les colis en fonction de l'immeuble"
  *          }
- *     }},
+ *     },
+ *     "getNbPackageHandOver" = {
+ *          "method": "GET",
+ *          "path"="/packages/handedover/{idBuilding}",
+ *          "controller"="App\Controller\Api\PackageHandedOverController",
+ *          "read"=false,
+ *          "openapi_context"=
+ *          {
+ *              "summary"="Récupére les colis non remis",
+ *              "description"="Récupére les colis en fonction de l'immeuble non remis"
+ *          }
+ *     }
+ *     },
  *     normalizationContext={
  *          "groups"={"packages_read"}
  *     },
@@ -55,6 +67,17 @@ class Package
      * )
      */
     private $nbPackage;
+
+    /**
+     * @var boolean
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Groups({"packages_read"})
+     * @Assert\Type(
+     *     type="bool",
+     *     message="typeError.bool"
+     * )
+     */
+    private $isHandedOver;
 
     /**
      * @ORM\ManyToOne(targetEntity=Building::class, inversedBy="packages")
@@ -187,6 +210,18 @@ class Package
                 $packageDetail->setPackage(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIsHandedOver(): ?bool
+    {
+        return $this->isHandedOver;
+    }
+
+    public function setIsHandedOver(?bool $isHandedOver): self
+    {
+        $this->isHandedOver = $isHandedOver;
 
         return $this;
     }
