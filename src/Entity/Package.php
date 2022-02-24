@@ -4,8 +4,6 @@ namespace App\Entity;
 
 use App\Entity\Traits\TimeStampableTrait;
 use App\Repository\PackageRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -27,7 +25,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *              "description"="Récupére les colis en fonction de l'immeuble"
  *          }
  *     },
- *     "getNbPackageHandOver" = {
+ *     "getAllPackageHandOver" = {
  *          "method": "GET",
  *          "path"="/packages/handedover/{idBuilding}",
  *          "controller"="App\Controller\Api\PackageHandedOverController",
@@ -35,6 +33,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          "openapi_context"=
  *          {
  *              "summary"="Récupére les colis non remis",
+ *              "description"="Récupére les colis en fonction de l'immeuble non remis"
+ *          }
+ *     },
+ *     "getNbPackageHandOver" = {
+ *          "method": "GET",
+ *          "path"="/packages/count/handedover/{idBuilding}",
+ *          "controller"="App\Controller\Api\PackageNbHandedOverController",
+ *          "read"=false,
+ *          "openapi_context"=
+ *          {
+ *              "summary"="Récupére le nombre de colis non remis",
  *              "description"="Récupére les colis en fonction de l'immeuble non remis"
  *          }
  *     }
@@ -113,22 +122,6 @@ class Package
      */
     private $guardian;
 
-    /**
-     * @ORM\OneToMany(targetEntity=PackageDetail::class, mappedBy="package")
-     * @Groups({"packages_read"})
-     * @Assert\Type(
-     *     type="object",
-     *     message="typeError.object"
-     * )
-     */
-    private $packageDetail;
-
-    public function __construct()
-    {
-        $this->packageDetail = new ArrayCollection();
-    }
-
-
     use TimeStampableTrait;
 
     public function getId(): ?int
@@ -180,36 +173,6 @@ class Package
     public function setGuardian(?User $guardian): self
     {
         $this->guardian = $guardian;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|PackageDetail[]
-     */
-    public function getPackageDetail(): Collection
-    {
-        return $this->packageDetail;
-    }
-
-    public function addPackageDetail(PackageDetail $packageDetail): self
-    {
-        if (!$this->packageDetail->contains($packageDetail)) {
-            $this->packageDetail[] = $packageDetail;
-            $packageDetail->setPackage($this);
-        }
-
-        return $this;
-    }
-
-    public function removePackageDetail(PackageDetail $packageDetail): self
-    {
-        if ($this->packageDetail->removeElement($packageDetail)) {
-            // set the owning side to null (unless already changed)
-            if ($packageDetail->getPackage() === $this) {
-                $packageDetail->setPackage(null);
-            }
-        }
 
         return $this;
     }

@@ -34,7 +34,7 @@ trait TimeStampableTrait
      *     type="\DateTime",
      *     message="typeError.dateTime"
      * )
-     * @Groups({"users_read", "residents_read"})
+     * @Groups({"users_read", "residents_read", "packages_read"})
      */
     private $createdAt;
 

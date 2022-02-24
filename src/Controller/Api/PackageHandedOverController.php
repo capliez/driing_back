@@ -12,6 +12,9 @@ class PackageHandedOverController extends AbstractController
      */
     private $packageRepository;
 
+    /**
+     * @param PackageRepository $packageRepository
+     */
     public function __construct(PackageRepository $packageRepository)
     {
         $this->packageRepository = $packageRepository;
@@ -19,6 +22,22 @@ class PackageHandedOverController extends AbstractController
 
     public function __invoke(string $idBuilding)
     {
-        return $this->packageRepository->findAllHandOver($idBuilding);
+
+        $packages = $this->packageRepository->findAllHandOver($idBuilding);
+        $newPackages = Array();
+
+        if($packages){
+            foreach ($packages as $item) {
+                $date = date_format($item->getCreatedAt(),'Y-m-d');
+
+                if(array_search($date, $newPackages) !== 0){
+                    $newPackages[$date][] = $item;
+                }
+            }
+
+            return Array($newPackages);
+        }
+
+        return $packages;
     }
 }

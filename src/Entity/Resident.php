@@ -46,7 +46,7 @@ class Resident
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"residents_read"})
+     * @Groups({"residents_read", "packages_read"})
      */
     private $id;
 
@@ -55,7 +55,7 @@ class Resident
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="resident.fields.lastName.constraints.notBlank")
      * @Assert\Regex(pattern="/\d/", match=false, message="resident.fields.lastName.constraints.regex")
-     * @Groups({"residents_read"})
+     * @Groups({"residents_read", "packages_read"})
      * @Assert\Type(
      *     type="string",
      *     message="typeError.string"

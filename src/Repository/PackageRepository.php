@@ -44,6 +44,24 @@ class PackageRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    public function countPackageNoHandedOver($idBuilding)
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->select('SUM(r.nbPackage) AS nb')
+            ->innerJoin('r.resident', 're')
+            ->andWhere('r.building = :id')
+            ->andWhere('r.isHandedOver = :over OR r.isHandedOver is null')
+            ->andWhere('re.isEnabled = :enabled')
+            ->setParameters([
+                'id' => $idBuilding,
+                'over' => false,
+                'enabled' => true,
+            ]);
+
+        return $qb->getQuery()->getResult();
+    }
+
+
     // /**
     //  * @return Package[] Returns an array of Package objects
     //  */
