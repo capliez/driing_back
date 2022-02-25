@@ -12,6 +12,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
+
 /**
  * @ORM\Entity(repositoryClass=ResidentRepository::class)
  * @UniqueEntity(
@@ -31,7 +32,19 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "summary"="Récupére les résidents",
  *              "description"="Récupére les résidents en fonction de l'immeuble"
  *          }
- *     }},
+ *     },
+ *     "searchResident" = {
+ *          "method": "GET",
+ *          "path"="/residents/search/{idBuilding}/{lastName}/{isHandedOver}",
+ *          "controller"="App\Controller\Api\ResidentSearchController",
+ *          "read"=false,
+ *          "openapi_context"=
+ *          {
+ *              "summary"="Rechercher un résident",
+ *              "description"="Recherche un résident dans un immeuble"
+ *          }
+ *     }
+ *     },
  *     normalizationContext={
  *          "groups"={"residents_read"}
  *     },

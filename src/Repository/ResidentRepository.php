@@ -30,6 +30,54 @@ class ResidentRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+
+    public function searchResidentByBuilding($idBuilding, $lastName, $isHandedOver)
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->andWhere('r.building = :idBuilding')
+            ->andWhere('r.isEnabled = :isEnabled')
+            ->setParameter('idBuilding', $idBuilding)
+            ->setParameter('isEnabled', true);
+
+
+        $searchTerms = $this->extractSearchTerms($lastName);
+
+        if(\count($searchTerms) > 0 && $lastName){
+
+            foreach ($searchTerms as $key => $term) {
+                $qb
+                    ->andWhere('r.lastName LIKE :t_'.$key)
+                    ->setParameter('t_'.$key, '%'.$term.'%')
+                ;
+            }
+        }
+
+        if($isHandedOver) {
+            $qb
+                ->innerJoin('r.packages', 'p')
+                ->andWhere('p.isHandedOver = :isHandedOver')
+                ->setParameter('isHandedOver', $isHandedOver)
+            ;
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Transforms the search string into an array of search terms.
+     */
+    private function extractSearchTerms(string $searchQuery): array
+    {
+        $searchQuery = trim(preg_replace('/[[:space:]]+/', ' ', $searchQuery));
+        $terms = array_unique(explode(' ', $searchQuery));
+
+        // ignore the search terms that are too short
+        return array_filter($terms, function ($term) {
+            return 2 <= mb_strlen($term);
+        });
+    }
+
+
     // /**
     //  * @return Resident[] Returns an array of Resident objects
     //  */
