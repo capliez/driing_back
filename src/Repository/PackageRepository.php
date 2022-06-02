@@ -19,6 +19,10 @@ class PackageRepository extends ServiceEntityRepository
         parent::__construct($registry, Package::class);
     }
 
+
+    /**
+     * demo comment
+     */
     public function findAllByBuilding($id)
     {
         $qb = $this->createQueryBuilder('r')
