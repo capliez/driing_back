@@ -38,6 +38,8 @@ class PackageHandedOverController extends AbstractController
             return Array($newPackages);
         }
 
+        dd($packages);
+
         return $packages;
     }
 }

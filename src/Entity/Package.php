@@ -89,6 +89,17 @@ class Package
     private $isHandedOver;
 
     /**
+     * @var boolean
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Groups({"packages_read"})
+     * @Assert\Type(
+     *     type="bool",
+     *     message="typeError.bool"
+     * )
+     */
+    private $isBulky;
+
+    /**
      * @ORM\ManyToOne(targetEntity=Building::class, inversedBy="packages")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotBlank(message="package.fields.building.constraints.notBlank")
@@ -185,6 +196,18 @@ class Package
     public function setIsHandedOver(?bool $isHandedOver): self
     {
         $this->isHandedOver = $isHandedOver;
+
+        return $this;
+    }
+
+    public function getIsBulky(): ?bool
+    {
+        return $this->isBulky;
+    }
+
+    public function setIsBulky(?bool $isBulky): self
+    {
+        $this->isBulky = $isBulky;
 
         return $this;
     }
