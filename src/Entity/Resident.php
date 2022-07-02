@@ -236,4 +236,19 @@ class Resident
 
         return $this;
     }
+
+    /**
+     * @Groups({"residents_read"})
+     * @return bool
+     */
+    public function isPackageHandedOver(): ?bool
+    {
+        $isResult = false;
+
+        foreach ($this->packages as $package) {
+            if (!$package->getIsHandedOver()) $isResult = true;
+        }
+
+        return $isResult;
+    }
 }

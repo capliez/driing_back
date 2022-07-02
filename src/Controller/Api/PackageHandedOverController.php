@@ -34,11 +34,10 @@ class PackageHandedOverController extends AbstractController
                     $newPackages[$date][] = $item;
                 }
             }
-
-            return Array($newPackages);
+            ksort($newPackages);
+            return Array(array_reverse($newPackages));
         }
 
-        dd($packages);
 
         return $packages;
     }

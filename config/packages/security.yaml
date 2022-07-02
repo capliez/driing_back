@@ -76,7 +76,7 @@ security:
         - { path: ^/api/buildings, roles: ROLE_GUARDIAN, methods: [ GET ] }
         #Resident
         - { path: ^/api/residents/building, roles: ROLE_GUARDIAN, methods: GET }
-        - { path: ^/api/residents, roles: ROLE_GUARDIAN, methods: [ POST, PUT ] }
+        - { path: ^/api/residents, roles: ROLE_GUARDIAN, methods: [ POST, POST, PUT ] }
         #Package
         - { path: ^/api/packages/building, roles: ROLE_GUARDIAN, methods: GET }
         - { path: ^/api/packages/handedover, roles: ROLE_GUARDIAN, methods: GET }

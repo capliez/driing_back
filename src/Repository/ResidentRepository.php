@@ -25,7 +25,9 @@ class ResidentRepository extends ServiceEntityRepository
             ->andWhere('r.building = :id')
             ->andWhere('r.isEnabled = :enabled')
             ->setParameter('id', $id)
-            ->setParameter('enabled', true);
+            ->setParameter('enabled', true)
+            ->orderBy('r.lastName', 'ASC')
+           ;
 
         return $qb->getQuery()->getResult();
     }
@@ -56,7 +58,7 @@ class ResidentRepository extends ServiceEntityRepository
             $qb
                 ->innerJoin('r.packages', 'p')
                 ->andWhere('p.isHandedOver = :isHandedOver')
-                ->setParameter('isHandedOver', $isHandedOver)
+                ->setParameter('isHandedOver', !$isHandedOver)
             ;
         }
 
