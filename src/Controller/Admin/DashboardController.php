@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Building;
 use App\Entity\Resident;
+use App\Entity\Package;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -57,5 +58,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('user.namePlural', 'fas fa-users', User::class);
         yield MenuItem::linkToCrud('building.namePlural', 'fas fa-building', Building::class);
         yield MenuItem::linkToCrud('resident.namePlural', 'fas fa-address-book', Resident::class);
+        yield MenuItem::linkToCrud('package.namePlural', 'fas fa-box-open', Package::class);
     }
 }

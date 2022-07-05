@@ -251,4 +251,12 @@ class Resident
 
         return $isResult;
     }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->lastName;
+    }
 }

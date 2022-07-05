@@ -188,6 +188,13 @@ class Package
         return $this;
     }
 
+    public function setCreatedAt(\DateTime $dateTimeImmutable): self
+    {
+        $this->createdAt = $dateTimeImmutable;
+
+        return $this;
+    }
+
     public function getIsHandedOver(): ?bool
     {
         return $this->isHandedOver;

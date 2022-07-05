@@ -120,3 +120,24 @@ resident:
       label: N° téléphone
     building:
       label: Immeuble
+
+###############################################################################################################
+############################################ Entity package ##################################################
+###############################################################################################################
+
+package:
+  nameSingul: Colis
+  namePlural: Colis
+  fields:
+    nbPackage:
+      label: Nombre de colis
+    resident:
+      label: Nom du résident
+    building:
+      label: Nom de l'immeuble
+    guardian:
+      label: Nom du gardien
+    isBulky:
+      label: Colis volumineux
+    isHandedOver:
+      label: Colis remis
