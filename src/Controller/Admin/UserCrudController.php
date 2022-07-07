@@ -143,6 +143,7 @@ class UserCrudController extends AbstractCrudController
         yield EmailField::new('email')->setLabel('user.fields.email.label')->setColumns('col-md-8')->hideOnIndex();
         yield TextField::new('password')->setFormType(PasswordType::class)->setLabel('user.fields.password.label')->setColumns('col-md-6')->onlyWhenCreating();
         yield TelephoneField::new('phone')->setLabel('user.fields.phone.label')->setColumns('col-md-6')->hideOnIndex();
+        yield BooleanField::new('isOnboarding')->setLabel('use.fields.isOnboarding.label')->setColumns('col-md-8');
 
         //Step 2
         yield AssociationField::new('language')

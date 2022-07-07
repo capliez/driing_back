@@ -139,7 +139,12 @@ class Resident
      */
     public function getCountPackages(): int
     {
-        return count($this->packages);
+        $nb = 0;
+        foreach ($this->packages as $package) {
+            if(!$package->getIsHandedOver()) $nb += $package->getNbPackage();
+        }
+
+        return $nb;
     }
 
     public function getId(): ?int
